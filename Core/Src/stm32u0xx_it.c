@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2026 STMicroelectronics.
+  * Copyright (c) 2025 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -218,6 +218,7 @@ void TIM7_LPTIM2_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_LPTIM2_IRQn 1 */
 
+
   /* USER CODE END TIM7_LPTIM2_IRQn 1 */
 }
 
@@ -260,6 +261,31 @@ void USART2_LPUART2_IRQHandler(void)
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_LPUART2_IRQn 1 */
 
+  UART_RX_buf_tmp[1][UART_buf_count[1]]= USART2->RDR;
+  UART_buf_count[1]++;
+
+  if((UART_RX_buf_tmp[1][UART_buf_count[1] -1 ] == 0x03) &(UART_RX_buf_tmp[1][UART_buf_count[1] -1 - 6 ] == 0x02) ) {
+    for(int k=0;k<7;k++){
+    	UART_RX_buf[1][k] = UART_RX_buf_tmp[1][UART_buf_count[1] - 7 + k];
+    }
+    UART_State[1] = 0;
+    UART_buf_count[1] = 0;
+    UART_Receive_complete[1] = 1;
+    for(int k=0;k<UART_buf_len;k++){
+    	UART_RX_buf_tmp[1][k] = 0;
+    }
+  }
+
+  if(UART_buf_count[1] >= UART_buf_len){
+	UART_State[1] = 0;
+	UART_buf_count[1] = 0;
+	UART_Receive_complete[1] = 0;
+    for(int k=0;k<UART_buf_len;k++){
+    	UART_RX_buf_tmp[1][k] = 0;
+    }
+  }
+
+
   /* USER CODE END USART2_LPUART2_IRQn 1 */
 }
 
@@ -274,6 +300,45 @@ void USART3_LPUART1_IRQHandler(void)
   HAL_UART_IRQHandler(&hlpuart1);
   /* USER CODE BEGIN USART3_LPUART1_IRQn 1 */
 
+
+	UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp] = LPUART1->RDR;
+	UI_UART_buf_count_tmp++;
+
+	if(UI_UART_buf_count_tmp > 2){
+	  if((UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-3] == 0x53) &&(UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-2] == 0x54)
+			  &&(UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-1] == 0x55))
+	  {
+		  UI_UART_State = 1;
+		  UI_UART_buf_count = 2;
+		  UI_UART_RX_buf[0] = UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-3];
+		  UI_UART_RX_buf[1] = UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-2];
+
+	  }
+	}
+
+	  if(UI_UART_State == 1){
+		  UI_UART_RX_buf[UI_UART_buf_count] = UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp-1];
+		  UI_UART_buf_count++;
+
+		  if((UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp -2 ] == 0x45) &&(UI_UART_RX_buf_tmp[UI_UART_buf_count_tmp - 1] == 0x44)) {
+			  UI_UART_Receive_complete = 1;
+			  UI_UART_State = 0;
+			  UI_UART_buf_count_tmp = 0;
+			  UI_UART_buf_count_Save = UI_UART_buf_count;
+			  UI_UART_buf_count = 0;
+
+		  }
+	  }
+
+	  if(UI_UART_buf_count > UI_UART_buf_len -1){
+		  UI_UART_State = 0;
+		  UI_UART_buf_count = 0;
+		  UI_UART_buf_count_tmp = 0;
+		  UI_UART_Receive_complete = 0;
+		  for(int k=0;k<UI_UART_buf_len;k++){
+			UI_UART_RX_buf_tmp[k] = 0;
+		  }
+		}
   /* USER CODE END USART3_LPUART1_IRQn 1 */
 }
 
@@ -287,6 +352,32 @@ void USART4_LPUART3_IRQHandler(void)
   /* USER CODE END USART4_LPUART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN USART4_LPUART3_IRQn 1 */
+
+
+
+	UART_RX_buf_tmp[0][UART_buf_count[0]]= USART4->RDR;
+    UART_buf_count[0]++;
+
+    if((UART_RX_buf_tmp[0][UART_buf_count[0] -1 ] == 0x03) &(UART_RX_buf_tmp[0][UART_buf_count[0] -1 - 6 ] == 0x02) ) {
+      for(int k=0;k<7;k++){
+      	UART_RX_buf[0][k] = UART_RX_buf_tmp[0][UART_buf_count[0] - 7 + k];
+      }
+      UART_State[0] = 0;
+      UART_buf_count[0] = 0;
+      UART_Receive_complete[0] = 1;
+      for(int k=0;k<UART_buf_len;k++){
+      	UART_RX_buf_tmp[0][k] = 0;
+      }
+    }
+
+    if(UART_buf_count[0] >= UART_buf_len){
+  	UART_State[0] = 0;
+  	UART_buf_count[0] = 0;
+  	UART_Receive_complete[0] = 0;
+      for(int k=0;k<UART_buf_len;k++){
+      	UART_RX_buf_tmp[0][k] = 0;
+      }
+    }
 
   /* USER CODE END USART4_LPUART3_IRQn 1 */
 }
