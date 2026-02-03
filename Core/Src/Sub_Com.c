@@ -279,6 +279,11 @@ void Check_UART_Receive(int Port, int check_val){
 			if(repeater_mode ==1){
 				if(V24_Status == 1){	//24V failure
 					Repeater_Data_tmp[2] = 0x00;
+					for(int i=0 ; i<Fire_Data_Num ; i++){
+						for(int j=0; j<4; j++){
+							Fire_Data_tmp[Repeater_Data_tmp[0]-1][j][i] = 0;
+						}
+					}
 				}
 				else{
 					Repeater_Data_tmp[2] = ((Uart_temp_data[3]&0x0f))|((Uart_temp_data[4]&0x0f)<<4);
@@ -293,8 +298,39 @@ void Check_UART_Receive(int Port, int check_val){
 						else if(REPEATER_first_fire == 1){
 							REPEATER_first_fire = 0;
 						}
-
 					}
+
+					for(int i=0 ; i<Fire_Data_Num-1 ; i++){
+						for(int j=0; j<4; j++){
+							Fire_Data_tmp[Repeater_Data_tmp[0]-1][j][i] = Fire_Data_tmp[Repeater_Data_tmp[0]-1][j][i+1];
+						}
+					}
+					for(int i=0 ; i<4; i++){
+						Fire_Data_tmp[Repeater_Data_tmp[0]-1][i][Fire_Data_Num - 1] = (Uart_temp_data[3]>> i & 0x01);
+					}
+
+					uint8_t tmp_In_Sub_data[4],tmp_In_Sum_data[4] , tmp_In_data ;
+
+					for(int i=0; i<4; i++){
+						tmp_In_Sum_data[i] = 0;
+						for(int j=0; j<Fire_Data_Num; j++){
+							tmp_In_Sum_data[i] = tmp_In_Sum_data[i] + Fire_Data_tmp[Repeater_Data_tmp[0]-1][i][j];
+						}
+					}
+
+					for(int i=0; i<4; i++){
+						if(tmp_In_Sum_data[i] > 0){
+							tmp_In_Sub_data[i] = 1;
+						}
+						else{
+							tmp_In_Sub_data[i] = 0;
+						}
+					}
+
+					tmp_In_data = (tmp_In_Sub_data[3]<< 3)|(tmp_In_Sub_data[2]<< 2)|(tmp_In_Sub_data[1]<< 1)|(tmp_In_Sub_data[0]<< 0);
+
+					Repeater_Data_tmp[2] = ((tmp_In_data&0x0f))|((Uart_temp_data[4]&0x0f)<<4);
+
 				}
 			}
 			else{

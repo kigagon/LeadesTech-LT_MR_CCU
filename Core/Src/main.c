@@ -253,6 +253,8 @@ uint8_t Info_Data_Tmp;
 uint8_t Read_Info_Mode;
 #define Read_Info_Def_Mode	1
 #define Read_Info_Test_Mode	2
+
+uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

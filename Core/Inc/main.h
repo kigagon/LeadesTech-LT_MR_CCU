@@ -370,6 +370,8 @@ extern uint8_t Rep_Set_Mode;
 #define Latch_Hold_Time 	10
 #define Latch_Change_Num 	5
 
+#define Fire_Data_Num 	5
+extern uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
 
 /* USER CODE END Private defines */
 
