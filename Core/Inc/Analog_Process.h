@@ -9,7 +9,7 @@
 #define INC_ANALOG_PROCESS_H_
 
 #define Analog_Temp_Data_Num	15
-#define Analog_Smoke_Data_Num	600
+#define Analog_Smoke_Data_Num	3
 
 //아날로그 정온식 저장 화일
 extern uint8_t Analog_Temp_Data[220][Analog_Temp_Data_Num];

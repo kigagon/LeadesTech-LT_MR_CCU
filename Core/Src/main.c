@@ -490,7 +490,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_FLASH_Init();
-//  MX_IWDG_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   Analog_Test_Mode = Def_Out_Mode;
@@ -946,6 +946,7 @@ for(int i=0; i< 2; i++){
 	Check_UI_UART_Receive(UI_UART_Receive_complete);
 	//Read_Reapeter_Data();
 
+
 	if(Loop_mode == Normal_Set){
 		Check_UI_UART_Receive(UI_UART_Receive_complete);
 		Set_BAUDRATE(UART_BAUDRATE,OUT_PORT);
@@ -986,12 +987,7 @@ for(int i=0; i< 2; i++){
 
 		Check_Relay();
 	}
-/*
-	Check_UI_UART_Receive(UI_UART_Receive_complete);
-	if(Loop_mode == Loop_Set){
-		Check_Relay();
-	}
-	*/
+
 	Check_UI_UART_Receive(UI_UART_Receive_complete);
 
 	Check_Over_Current();
@@ -2774,7 +2770,7 @@ void Read_Reapeter_Data(uint8_t Com_Status){
 
 				Check_UART_Receive(Com_Status, REPEATER_Read_Regster[i]);
 				if(REPEATER_Read_Regster[i] == 1){
-					//Check_UART_Receive(Com_Status, UART_Receive_complete[Com_Status]);
+					Check_UART_Receive(Com_Status, UART_Receive_complete[Com_Status]);
 
 					break;
 				}

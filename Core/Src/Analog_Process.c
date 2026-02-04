@@ -14,6 +14,7 @@ uint8_t Analog_Temp_Data[220][Analog_Temp_Data_Num];
 
 //아날로그 광전식 저장 화일
 uint8_t Analog_Smoke_Data[220][Analog_Smoke_Data_Num];
+uint16_t Analog_Smoke_Data_Sum;
 uint8_t Process_value;
 
 uint8_t Anal_Process(uint8_t Num ,uint8_t type , uint8_t data){
@@ -75,11 +76,29 @@ uint8_t Anal_Process(uint8_t Num ,uint8_t type , uint8_t data){
 			else if((Analog_Temp_Data[Num][Analog_Temp_Data_Num-1] - Analog_Temp_Data[Num][0]) < 1){
 				Process_value = (uint8_t)(data*0.92);
 			}
+
+			// 80 도이상 장시간 유지시 일시적으로 90도이상 올라가는 문제 대응
+			if(Process_value > 80){
+				Process_value = (Process_value - 80) * 0.8 + 80;
+			}
 		}
 
 	}
 	else if((type == 0x40)|(type == 0x41)|(type == 0x42)|(type == 0x43)){
-		Process_value = data;
+
+		for(int i=0 ; i<Analog_Smoke_Data_Num-1 ; i++){
+			Analog_Smoke_Data[Num][i]=Analog_Smoke_Data[Num][i+1];
+		}
+		Analog_Smoke_Data[Num][Analog_Smoke_Data_Num-1] = data;
+
+		Analog_Smoke_Data_Sum = 0;
+		for(int i=0 ; i<Analog_Smoke_Data_Num-1 ; i++){
+			Analog_Smoke_Data_Sum = Analog_Smoke_Data_Sum + Analog_Smoke_Data[Num][i];
+		}
+
+		Process_value = (uint8_t)(Analog_Smoke_Data_Sum/Analog_Smoke_Data_Num);
+
+
 	}
 
 
