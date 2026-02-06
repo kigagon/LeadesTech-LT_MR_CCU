@@ -92,7 +92,7 @@ uint8_t Anal_Process(uint8_t Num ,uint8_t type , uint8_t data){
 		Analog_Smoke_Data[Num][Analog_Smoke_Data_Num-1] = data;
 
 		Analog_Smoke_Data_Sum = 0;
-		for(int i=0 ; i<Analog_Smoke_Data_Num-1 ; i++){
+		for(int i=0 ; i<Analog_Smoke_Data_Num ; i++){
 			Analog_Smoke_Data_Sum = Analog_Smoke_Data_Sum + Analog_Smoke_Data[Num][i];
 		}
 

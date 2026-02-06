@@ -490,7 +490,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   MX_FLASH_Init();
-  MX_IWDG_Init();
+//  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   Analog_Test_Mode = Def_Out_Mode;
@@ -558,6 +558,14 @@ for(int i=0; i< 2; i++){
 }
 
 
+uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
+for(int i=0; i<Repeater_Number ; i++){
+	for(int j=0; j<4; j++){
+		for(int k=0; k<Fire_Data_Num; k++){
+			Fire_Data_tmp[i][j][k] = 0;
+		}
+	}
+}
 
 
   if(HAL_GPIO_ReadPin(BOOT_MODE_GPIO_Port, BOOT_MODE_Pin) == GPIO_PIN_SET){
