@@ -255,6 +255,7 @@ uint8_t Read_Info_Mode;
 #define Read_Info_Test_Mode	2
 
 uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -493,14 +494,14 @@ int main(void)
 //  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
-  Analog_Test_Mode = Def_Out_Mode;
+//  Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
-//  Analog_Test_Mode = Analog_temp_Test_Mode;
+  Analog_Test_Mode = Analog_temp_Test_Mode;
 
 
 // Read_Info_Mode = Read_Info_Test_Mode : 형슥승인용 모드
-//  Read_Info_Mode = Read_Info_Def_Mode;
-  Read_Info_Mode = Read_Info_Test_Mode;
+  Read_Info_Mode = Read_Info_Def_Mode;
+//  Read_Info_Mode = Read_Info_Test_Mode;
 
 
   // Timer1: 1 second cycle
@@ -558,14 +559,6 @@ for(int i=0; i< 2; i++){
 }
 
 
-uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
-for(int i=0; i<Repeater_Number ; i++){
-	for(int j=0; j<4; j++){
-		for(int k=0; k<Fire_Data_Num; k++){
-			Fire_Data_tmp[i][j][k] = 0;
-		}
-	}
-}
 
 
   if(HAL_GPIO_ReadPin(BOOT_MODE_GPIO_Port, BOOT_MODE_Pin) == GPIO_PIN_SET){
@@ -954,7 +947,6 @@ for(int i=0; i<Repeater_Number ; i++){
 	Check_UI_UART_Receive(UI_UART_Receive_complete);
 	//Read_Reapeter_Data();
 
-
 	if(Loop_mode == Normal_Set){
 		Check_UI_UART_Receive(UI_UART_Receive_complete);
 		Set_BAUDRATE(UART_BAUDRATE,OUT_PORT);
@@ -995,7 +987,12 @@ for(int i=0; i<Repeater_Number ; i++){
 
 		Check_Relay();
 	}
-
+/*
+	Check_UI_UART_Receive(UI_UART_Receive_complete);
+	if(Loop_mode == Loop_Set){
+		Check_Relay();
+	}
+	*/
 	Check_UI_UART_Receive(UI_UART_Receive_complete);
 
 	Check_Over_Current();
@@ -2778,7 +2775,7 @@ void Read_Reapeter_Data(uint8_t Com_Status){
 
 				Check_UART_Receive(Com_Status, REPEATER_Read_Regster[i]);
 				if(REPEATER_Read_Regster[i] == 1){
-					Check_UART_Receive(Com_Status, UART_Receive_complete[Com_Status]);
+					//Check_UART_Receive(Com_Status, UART_Receive_complete[Com_Status]);
 
 					break;
 				}
