@@ -494,9 +494,9 @@ int main(void)
 //  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
-//  Analog_Test_Mode = Def_Out_Mode;
+  Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
-  Analog_Test_Mode = Analog_temp_Test_Mode;
+//  Analog_Test_Mode = Analog_temp_Test_Mode;
 
 
 // Read_Info_Mode = Read_Info_Test_Mode : 형슥승인용 모드
@@ -788,7 +788,7 @@ for(int i=0; i< 2; i++){
 	  REPEATER_Regster[6] = 4;
   }
 
-  Read_Charge_Data();
+//  Read_Charge_Data();
 
 /*
   REPEATER_Acc_Set_Data[0] = 0x5f;
