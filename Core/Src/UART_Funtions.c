@@ -121,7 +121,7 @@ void UI_Com_Func(void){
 		}
 	}
 	else if((UI_UART_RX_buf[4] == 0)&(UI_UART_RX_buf[5] == 0)){
-		if(UI_UART_RX_buf[3] == 0x52){
+		if((UI_UART_RX_buf[3] == 0x52)|(UI_UART_RX_buf[3] == 0x47)|(UI_UART_RX_buf[3] == 0x6C)){
 			Run_UI_Com();
 		}
 	}
@@ -713,12 +713,15 @@ void UI_Com_Func_Infor_set(void)
 		*/
 
 		/*
+
 		if(Write_To_Flash(Info_In_ADDR_FLASH, UI_UART_RX_buf,UI_UART_buf_count_Save) == 1){
 			for(int i=0; i<220; i++){
 				REPEATER_Regster[i] = UI_UART_RX_buf[(i*2)+13];
 			}
 		}
-		*/
+
+
+*/
 		for(int i=0; i<220; i++){
 			REPEATER_Regster[i] = UI_UART_RX_buf[(i*2)+13];
 		}

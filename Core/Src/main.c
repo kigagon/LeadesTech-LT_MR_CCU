@@ -105,7 +105,10 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 /* USER CODE BEGIN PV */
 
-#define debug_mode	0
+#define debug_mode_On	0
+#define debug_mode_Off	1
+uint8_t debug_mode = debug_mode_On;
+//uint8_t debug_mode = debug_mode_Off;
 
 //array to store addresses
 uint8_t CCU_Address_tmp[8] ;
@@ -205,7 +208,6 @@ uint8_t REPEATER_Version_Read[Repeater_Number];
 uint8_t Rep_Version_Data[Rep_Version_Data_Number];
 
 uint8_t Info_Data_Version[6];
-//1200 * 12 = 14400
 int UART_BAUDRATE, Read_Baud_val;
 
 int CCU_Mode;
@@ -255,6 +257,11 @@ uint8_t Read_Info_Mode;
 #define Read_Info_Test_Mode	2
 
 uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
+
+
+#define Test_Res_mode_On	0
+#define Test_Res_mode_Off	1
+uint8_t Test_Res_mode ;
 
 /* USER CODE END PV */
 
@@ -589,11 +596,20 @@ for(int i=0; i< 2; i++){
 		Mini_Mode = 0;
 	}
 
+	/*
 	if((CCU_Address_tmp[4]) == 1){
 		Rep_Set_Mode = Rep_Number_30;
 	}
 	else{
 		Rep_Set_Mode = Rep_Number_220;
+	}
+	*/
+
+	if((CCU_Address_tmp[4]) == 1){
+		Test_Res_mode = Test_Res_mode_On;
+	}
+	else{
+		Test_Res_mode = Test_Res_mode_Off;
 	}
 
 	if(CCU_Address_tmp[5] == 1){
@@ -844,6 +860,13 @@ for(int i=0; i< 2; i++){
 
   Com_Out_Status = Com_On;
   Com_In_Status = Com_Off;
+
+  if(debug_mode == debug_mode_On ){
+
+  }
+  else if(debug_mode == debug_mode_Off ){
+	MX_IWDG_Init();
+  }
 
 
   /* huart1 RX Interrupt  Enable */
