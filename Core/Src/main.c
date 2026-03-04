@@ -107,8 +107,8 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 #define debug_mode_On	0
 #define debug_mode_Off	1
-uint8_t debug_mode = debug_mode_On;
-//uint8_t debug_mode = debug_mode_Off;
+//uint8_t debug_mode = debug_mode_On;
+uint8_t debug_mode = debug_mode_Off;
 
 //array to store addresses
 uint8_t CCU_Address_tmp[8] ;
