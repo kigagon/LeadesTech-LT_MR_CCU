@@ -712,7 +712,7 @@ void UI_Com_Func_Infor_set(void)
 		}
 		*/
 
-		/*
+
 
 		if(Write_To_Flash(Info_In_ADDR_FLASH, UI_UART_RX_buf,UI_UART_buf_count_Save) == 1){
 			for(int i=0; i<220; i++){
@@ -721,12 +721,12 @@ void UI_Com_Func_Infor_set(void)
 		}
 
 
-*/
+/*
 		for(int i=0; i<220; i++){
 			REPEATER_Regster[i] = UI_UART_RX_buf[(i*2)+13];
 		}
 
-
+*/
 	}
 }
 
@@ -850,4 +850,11 @@ void UI_Com_Func_Anal_LED_Set(uint8_t Num){
 
 	}
 
+}
+
+void UI_UART_Wait(int Count){
+	for(int i=0; i<Count ; i++){
+		Check_UI_UART_Receive(UI_UART_Receive_complete);
+		HAL_Delay(1);
+	}
 }

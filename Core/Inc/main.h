@@ -89,6 +89,8 @@ void Read_Reapeter_Set_Data(uint8_t Com_Status, uint8_t Address);
 
 void Analog_test_read(void);
 
+void Re_Write_Flash(void);
+
 uint8_t Read_Repeater_Version(int num, uint8_t Com_Status);
 
 uint8_t Check_Line_Status(int num, uint8_t Com_Status);

@@ -31,3 +31,5 @@ void UI_Com_Func_S_Re(uint8_t Num);
 void UI_Com_Func_Acc_Set_Re(uint8_t Num);
 
 void UI_Com_Func_Anal_LED_Set(uint8_t Num);
+
+void UI_UART_Wait(int Count);

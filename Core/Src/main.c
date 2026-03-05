@@ -503,8 +503,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-  //debug_mode = debug_mode_On;
-  debug_mode = debug_mode_Off;
+  debug_mode = debug_mode_On;
+ // debug_mode = debug_mode_Off;
 
   Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
@@ -512,8 +512,8 @@ int main(void)
 
 
 // Read_Info_Mode = Read_Info_Test_Mode; //형식승인용 모드
- //Read_Info_Mode = Read_Info_Def_Mode;
-  Read_Info_Mode = Read_Info_Production_Mode;  // 검정용 모드
+ Read_Info_Mode = Read_Info_Def_Mode;
+//  Read_Info_Mode = Read_Info_Production_Mode;  // 검정용 모드
 
 
   // Timer1: 1 second cycle
@@ -532,6 +532,37 @@ int main(void)
   REPEATER_Version[0][3] = F_Version_Hour;
   REPEATER_Version[0][4] = F_Version_Min;
   REPEATER_Version[0][5] = F_Version_Sec;
+
+  for(int i=0; i<6; i++){
+	  CCU_Infomation_Data[i] =  REPEATER_Version[0][i];
+  }
+
+
+
+  //Write_W25Q_Device_Info();
+ // Read_W25Q_Device_Info();
+  /*
+    uint8_t W25Q_Page_Read_t[256];
+    uint8_t W25Q_Page_Write_t[256];
+
+    for(int i=0; i<512; i++){
+  	  W25Q_Page_Read_t[i] = 0;
+    }
+
+	W25qxx_EraseSector(0);
+	W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
+
+    for(int i=0; i< 256 ; i++){
+  	  W25Q_Page_Write_t[i] = i;
+      }
+    W25qxx_WritePage(W25Q_Page_Write_t,0 ,0,256);
+
+
+    W25qxx_ReadPage(W25Q_Page_Read_t, 0, 0, 256);
+  */
+
+
+
 
   Set_PWM(OUT_PORT , 300);
   Set_PWM(IN_PORT , 300);
@@ -554,7 +585,8 @@ for(int i=0; i< 2; i++){
 	  HAL_GPIO_WritePin(RS485_DE_GPIO_Port , RS485_DE_Pin , GPIO_PIN_RESET);
 	  HAL_GPIO_WritePin(RS485_RE_GPIO_Port , RS485_RE_Pin , GPIO_PIN_RESET);
 
-	  HAL_Delay(200);
+	  //HAL_Delay(200);
+	  UI_UART_Wait(200);
 
 	  LED_Control(RUN_LED1_GPIO_Port, RUN_LED1_Pin , LED_Off);
 	  LED_Control(RUN_LED2_GPIO_Port, RUN_LED2_Pin , LED_Off);
@@ -567,10 +599,9 @@ for(int i=0; i< 2; i++){
 	  LED_Control(UART2_RXD_LED_GPIO_Port, UART2_RXD_LED_Pin , LED_Off);
 	  LED_Control(ERR_UART2_LED_GPIO_Port, ERR_UART2_LED_Pin , LED_Off);
 
-	  HAL_Delay(200);
+	  //HAL_Delay(200);
+	  UI_UART_Wait(200);
 }
-
-
 
 
   if(HAL_GPIO_ReadPin(BOOT_MODE_GPIO_Port, BOOT_MODE_Pin) == GPIO_PIN_SET){
@@ -645,6 +676,8 @@ for(int i=0; i< 2; i++){
 	}
 
 
+
+
   PLC_Enable(OUT_PORT,PLC_Off);
   PLC_Enable(IN_PORT,PLC_Off);
 
@@ -652,10 +685,12 @@ for(int i=0; i< 2; i++){
   Relay_Control(IN_PORT, Realay_Off,5,1);
 
   if(Loop_mode == Loop_Set){
-	  HAL_Delay(4000);
+	  //HAL_Delay(4000);
+	  UI_UART_Wait(4000);
   }
   else{
-	  HAL_Delay(500);
+	 // HAL_Delay(500);
+	  UI_UART_Wait(500);
   }
 
   if(CCU_Address == 0){
@@ -674,14 +709,18 @@ for(int i=0; i< 2; i++){
   else{
 	  for(int i=0; i<2; i++){
 		  Relay_Control(IN_PORT, Realay_On,Latch_Hold_Time,Latch_Change_Num);
-		  HAL_Delay(100);
+		  //HAL_Delay(100);
+		  UI_UART_Wait(100);
 		  Relay_Control(IN_PORT, Realay_Off,Latch_Hold_Time,Latch_Change_Num);
-		  HAL_Delay(100);
+		  //HAL_Delay(100);
+		  UI_UART_Wait(100);
 
 		  Relay_Control(OUT_PORT, Realay_On,Latch_Hold_Time,Latch_Change_Num);
-		  HAL_Delay(100);
+		  //HAL_Delay(100);
+		  UI_UART_Wait(100);
 		  Relay_Control(OUT_PORT, Realay_Off,Latch_Hold_Time,Latch_Change_Num);
-		  HAL_Delay(100);
+		  //HAL_Delay(100);
+		  UI_UART_Wait(100);
 	  }
   }
 
@@ -698,10 +737,12 @@ for(int i=0; i< 2; i++){
 
 
   if(Loop_mode == Loop_Set){
-	  HAL_Delay(12000);
+	  //HAL_Delay(12000);
+	  UI_UART_Wait(12000);
   }
   else{
-	  HAL_Delay(500);
+	  //HAL_Delay(500);
+	  UI_UART_Wait(5000);
 
   }
 
@@ -2925,6 +2966,31 @@ void Analog_test_read(void){
 
 	Check_UI_UART_Receive(UI_UART_Receive_complete);
 	Read_Reapeter_Data(OUT_PORT);
+
+}
+
+void Re_Write_Flash(void){
+
+	int Change_Data = 0;
+	uint8_t W25Q_Page_Read_t[256];
+
+	//////CCU_Infomation_Data
+	if(Change_Data == 0){
+		W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
+		for(int i =0 ; i< 256; i++){
+			if(W25Q_Page_Read_t[i] == CCU_Infomation_Data[i]){}
+			else{Change_Data = 1;}
+		}
+	}
+
+	//////REPEATER_Regster
+	if(Change_Data == 0){
+		W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
+		for(int i =0 ; i< 256; i++){
+			if(W25Q_Page_Read_t[i] == CCU_Infomation_Data[i]){}
+			else{Change_Data = 1;}
+		}
+	}
 
 }
 /* USER CODE END 4 */

@@ -46,7 +46,7 @@ void Compile_Date(void){
 	  if((Date_Month[0] == 'J')&(Date_Month[1] == 'a')&(Date_Month[2] == 'n')){
 		  tmp_Date_Month = 1;
 	  }
-	  else if((Date_Month[0] == 'F')&(Date_Month[1] == 'a')&(Date_Month[2] == 'b')){
+	  else if((Date_Month[0] == 'F')&(Date_Month[1] == 'e')&(Date_Month[2] == 'b')){
 		  tmp_Date_Month = 2;
 	  }
 	  else if((Date_Month[0] == 'M')&(Date_Month[1] == 'a')&(Date_Month[2] == 'r')){
