@@ -107,8 +107,8 @@ PCD_HandleTypeDef hpcd_USB_DRD_FS;
 
 #define debug_mode_On	0
 #define debug_mode_Off	1
-//uint8_t debug_mode = debug_mode_On;
-uint8_t debug_mode = debug_mode_Off;
+uint8_t debug_mode ;
+
 
 //array to store addresses
 uint8_t CCU_Address_tmp[8] ;
@@ -255,6 +255,7 @@ uint8_t Info_Data_Tmp;
 uint8_t Read_Info_Mode;
 #define Read_Info_Def_Mode	1
 #define Read_Info_Test_Mode	2
+#define Read_Info_Production_Mode	3
 
 uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
 
@@ -501,14 +502,18 @@ int main(void)
 //  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
+
+  //debug_mode = debug_mode_On;
+  debug_mode = debug_mode_Off;
+
   Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
 //  Analog_Test_Mode = Analog_temp_Test_Mode;
 
 
-// Read_Info_Mode = Read_Info_Test_Mode : 형슥승인용 모드
-  Read_Info_Mode = Read_Info_Def_Mode;
-//  Read_Info_Mode = Read_Info_Test_Mode;
+// Read_Info_Mode = Read_Info_Test_Mode; //형식승인용 모드
+ //Read_Info_Mode = Read_Info_Def_Mode;
+  Read_Info_Mode = Read_Info_Production_Mode;  // 검정용 모드
 
 
   // Timer1: 1 second cycle
@@ -604,6 +609,8 @@ for(int i=0; i< 2; i++){
 		Rep_Set_Mode = Rep_Number_220;
 	}
 	*/
+
+	Rep_Set_Mode = Rep_Number_220;
 
 	if((CCU_Address_tmp[4]) == 1){
 		Test_Res_mode = Test_Res_mode_On;
@@ -777,22 +784,73 @@ for(int i=0; i< 2; i++){
 
 	  //Address 3
 	  REPEATER_Charge_Regster[0] = 0;	//Port1
-	  REPEATER_Charge_Regster[1] = 0;	//Port2
+	  REPEATER_Charge_Regster[1] = 1;	//Port2
 	  REPEATER_Charge_Regster[2] = 1;	//Port3
 	  REPEATER_Charge_Regster[3] = 0;	//Port4
 	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[2]&0x0f);
 	  REPEATER_Regster[2] = Info_Data_Tmp;
 
 	  //Address 4
-	  REPEATER_Charge_Regster[0] = 0;	//Port1
-	  REPEATER_Charge_Regster[1] = 1;	//Port2
+	  REPEATER_Charge_Regster[0] = 1;	//Port1
+	  REPEATER_Charge_Regster[1] = 0;	//Port2
 	  REPEATER_Charge_Regster[2] = 1;	//Port3
-	  REPEATER_Charge_Regster[3] = 0;	//Port4
+	  REPEATER_Charge_Regster[3] = 1;	//Port4
 	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[3]&0x0f);
 	  REPEATER_Regster[3] = Info_Data_Tmp;
 
 	  //Address 5
+	  REPEATER_Charge_Regster[0] = 0;	//Port1
+	  REPEATER_Charge_Regster[1] = 1;	//Port2
+	  REPEATER_Charge_Regster[2] = 1;	//Port3
+	  REPEATER_Charge_Regster[3] = 1;	//Port4
+	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[4]&0x0f);
+	  REPEATER_Regster[4] = Info_Data_Tmp;
+
+	  REPEATER_Regster[5] = 6;
+
+	  REPEATER_Regster[6] = 4;
+  }
+  else if(Read_Info_Mode == Read_Info_Production_Mode){
+	  //Read_Test_Info_Data();
+
+	  for(int i=0; i<220; i++){
+		  REPEATER_Regster[i] = 1;
+	  }
+
+	  //Address 1
+	  REPEATER_Charge_Regster[0] = 0;	//Port1
+	  REPEATER_Charge_Regster[1] = 0;	//Port2
+	  REPEATER_Charge_Regster[2] = 1;	//Port3
+	  REPEATER_Charge_Regster[3] = 0;	//Port4
+	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[0]&0x0f);
+	  REPEATER_Regster[0] = Info_Data_Tmp;
+
+	  //Address 2
+	  REPEATER_Charge_Regster[0] = 0;	//Port1
+	  REPEATER_Charge_Regster[1] = 1;	//Port2
+	  REPEATER_Charge_Regster[2] = 1;	//Port3
+	  REPEATER_Charge_Regster[3] = 1;	//Port4
+	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[1]&0x0f);
+	  REPEATER_Regster[1] = Info_Data_Tmp;
+
+	  //Address 3
+	  REPEATER_Charge_Regster[0] = 0;	//Port1
+	  REPEATER_Charge_Regster[1] = 1;	//Port2
+	  REPEATER_Charge_Regster[2] = 1;	//Port3
+	  REPEATER_Charge_Regster[3] = 0;	//Port4
+	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[2]&0x0f);
+	  REPEATER_Regster[2] = Info_Data_Tmp;
+
+	  //Address 4
 	  REPEATER_Charge_Regster[0] = 1;	//Port1
+	  REPEATER_Charge_Regster[1] = 0;	//Port2
+	  REPEATER_Charge_Regster[2] = 1;	//Port3
+	  REPEATER_Charge_Regster[3] = 1;	//Port4
+	  Info_Data_Tmp = ((REPEATER_Charge_Regster[3]&0x01)<<7)|((REPEATER_Charge_Regster[2]&0x01)<<6)|((REPEATER_Charge_Regster[1]&0x01)<<5)|((REPEATER_Charge_Regster[0]&0x01)<<4)|(REPEATER_Regster[3]&0x0f);
+	  REPEATER_Regster[3] = Info_Data_Tmp;
+
+	  //Address 5
+	  REPEATER_Charge_Regster[0] = 0;	//Port1
 	  REPEATER_Charge_Regster[1] = 1;	//Port2
 	  REPEATER_Charge_Regster[2] = 1;	//Port3
 	  REPEATER_Charge_Regster[3] = 1;	//Port4
