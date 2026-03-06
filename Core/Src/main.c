@@ -503,8 +503,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-  debug_mode = debug_mode_On;
- // debug_mode = debug_mode_Off;
+//  debug_mode = debug_mode_On;
+  debug_mode = debug_mode_Off;
 
   Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
@@ -536,32 +536,6 @@ int main(void)
   for(int i=0; i<6; i++){
 	  CCU_Infomation_Data[i] =  REPEATER_Version[0][i];
   }
-
-
-
-  //Write_W25Q_Device_Info();
- // Read_W25Q_Device_Info();
-  /*
-    uint8_t W25Q_Page_Read_t[256];
-    uint8_t W25Q_Page_Write_t[256];
-
-    for(int i=0; i<512; i++){
-  	  W25Q_Page_Read_t[i] = 0;
-    }
-
-	W25qxx_EraseSector(0);
-	W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
-
-    for(int i=0; i< 256 ; i++){
-  	  W25Q_Page_Write_t[i] = i;
-      }
-    W25qxx_WritePage(W25Q_Page_Write_t,0 ,0,256);
-
-
-    W25qxx_ReadPage(W25Q_Page_Read_t, 0, 0, 256);
-  */
-
-
 
 
   Set_PWM(OUT_PORT , 300);
@@ -768,10 +742,33 @@ for(int i=0; i< 2; i++){
 	  W25qxx_Init();
   }
 
+
+  //Write_W25Q_Device_Info();
+ // Read_W25Q_Device_Info();
+  /*
+    uint8_t W25Q_Page_Read_t[256];
+    uint8_t W25Q_Page_Write_t[256];
+
+    for(int i=0; i<512; i++){
+  	  W25Q_Page_Read_t[i] = 0;
+    }
+
+	W25qxx_EraseSector(0);
+	W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
+
+    for(int i=0; i< 256 ; i++){
+  	  W25Q_Page_Write_t[i] = i;
+      }
+    W25qxx_WritePage(W25Q_Page_Write_t,0 ,0,256);
+
+
+    W25qxx_ReadPage(W25Q_Page_Read_t, 0, 0, 256);
+  */
 //  Read_W25Q_Device_Info();
 
   if(Read_Info_Mode == Read_Info_Def_Mode){
-	  Read_Info_Data();
+//	  Read_Info_Data();
+	  Read_W25_Flash();
 
 	  if(Rep_Set_Mode == Rep_Number_30 ){
 		  for(int i=0; i<220; i++){
@@ -902,6 +899,7 @@ for(int i=0; i< 2; i++){
 
 	  REPEATER_Regster[6] = 4;
   }
+
 
 //  Read_Charge_Data();
 
@@ -1035,7 +1033,16 @@ for(int i=0; i< 2; i++){
 
   }
 
+/*
+  while(1){
 
+	  LED_Control(ERR_UART1_LED_GPIO_Port, ERR_UART1_LED_Pin , LED_On);
+	  Write_W25_Flash();
+	  LED_Control(ERR_UART1_LED_GPIO_Port, ERR_UART1_LED_Pin , LED_Off);
+	  UI_UART_Wait(2000);
+
+  }
+*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -1128,6 +1135,8 @@ for(int i=0; i< 2; i++){
 		  Check_UI_UART_Receive(UI_UART_Receive_complete);
 		}
 	}
+
+	Write_W25_Flash();
   }
   /* USER CODE END 3 */
 }
@@ -2969,14 +2978,14 @@ void Analog_test_read(void){
 
 }
 
-void Re_Write_Flash(void){
+void Write_W25_Flash(void){
 
 	int Change_Data = 0;
 	uint8_t W25Q_Page_Read_t[256];
 
 	//////CCU_Infomation_Data
 	if(Change_Data == 0){
-		W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
+		W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
 		for(int i =0 ; i< 256; i++){
 			if(W25Q_Page_Read_t[i] == CCU_Infomation_Data[i]){}
 			else{Change_Data = 1;}
@@ -2985,13 +2994,57 @@ void Re_Write_Flash(void){
 
 	//////REPEATER_Regster
 	if(Change_Data == 0){
-		W25qxx_ReadPage(W25Q_Page_Read_t, 0,0, 256);
-		for(int i =0 ; i< 256; i++){
-			if(W25Q_Page_Read_t[i] == CCU_Infomation_Data[i]){}
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, 256);
+		for(int i =0 ; i< Repeater_Number; i++){
+			if(W25Q_Page_Read_t[i] == REPEATER_Regster[i]){}
 			else{Change_Data = 1;}
 		}
 	}
 
+	//////REPEATER_Regster
+	if(Change_Data == 0){
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, 256);
+		for(int i =0 ; i< Repeater_Number; i++){
+			if(W25Q_Page_Read_t[i] == REPEATER_Acc_Set_Data[i]){}
+			else{Change_Data = 1;}
+		}
+	}
+
+
+	if(Change_Data == 1){
+
+		Flash_ID= W25qxx_ReadID();
+		if(_MANUFACTURER_ID == ((Flash_ID >> 16) & 0xff)){
+			Flash_Status = 1;
+		}
+		else{
+			Flash_Status = 0;
+		}
+
+		if(Flash_Status == 1){
+			W25qxx_EraseSector(0);
+			W25qxx_WritePage(CCU_Infomation_Data,CCU_Infomation_Data_Add ,0,256);
+			W25qxx_WritePage(REPEATER_Regster,REPEATER_Regster_Data_Add ,0,Repeater_Number);
+			W25qxx_WritePage(REPEATER_Acc_Set_Data,REPEATER_Acc_Set_Data_Add ,0,Repeater_Number);
+		}
+	}
+}
+
+void Read_W25_Flash(void){
+
+	Flash_ID= W25qxx_ReadID();
+	if(_MANUFACTURER_ID == ((Flash_ID >> 16) & 0xff)){
+		Flash_Status = 1;
+	}
+	else{
+		Flash_Status = 0;
+	}
+
+	if(Flash_Status == 1){
+		W25qxx_ReadPage(CCU_Infomation_Data, CCU_Infomation_Data_Add,0, 256);
+		W25qxx_ReadPage(REPEATER_Regster, REPEATER_Regster_Data_Add,0, Repeater_Number);
+		W25qxx_ReadPage(REPEATER_Acc_Set_Data, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
+	}
 }
 /* USER CODE END 4 */
 

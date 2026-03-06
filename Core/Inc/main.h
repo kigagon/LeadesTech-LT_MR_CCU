@@ -89,7 +89,8 @@ void Read_Reapeter_Set_Data(uint8_t Com_Status, uint8_t Address);
 
 void Analog_test_read(void);
 
-void Re_Write_Flash(void);
+void Write_W25_Flash(void);
+void Read_W25_Flash(void);
 
 uint8_t Read_Repeater_Version(int num, uint8_t Com_Status);
 
@@ -374,6 +375,11 @@ extern uint8_t Rep_Set_Mode;
 
 #define Fire_Data_Num 	5
 extern uint8_t Fire_Data_tmp[Repeater_Number][4][Fire_Data_Num]; // 주소,입력 포트 , 해제 카운트
+
+
+#define CCU_Infomation_Data_Add 0
+#define REPEATER_Regster_Data_Add 1
+#define REPEATER_Acc_Set_Data_Add 2
 
 /* USER CODE END Private defines */
 

@@ -713,20 +713,20 @@ void UI_Com_Func_Infor_set(void)
 		*/
 
 
-
+/*
 		if(Write_To_Flash(Info_In_ADDR_FLASH, UI_UART_RX_buf,UI_UART_buf_count_Save) == 1){
 			for(int i=0; i<220; i++){
 				REPEATER_Regster[i] = UI_UART_RX_buf[(i*2)+13];
 			}
 		}
+*/
 
 
-/*
 		for(int i=0; i<220; i++){
 			REPEATER_Regster[i] = UI_UART_RX_buf[(i*2)+13];
 		}
 
-*/
+
 	}
 }
 
