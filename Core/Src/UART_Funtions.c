@@ -727,6 +727,7 @@ void UI_Com_Func_Infor_set(void)
 		}
 
 
+		Write_REPEATER_Data_Flash();
 	}
 }
 

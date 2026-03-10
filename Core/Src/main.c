@@ -503,8 +503,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-//  debug_mode = debug_mode_On;
-  debug_mode = debug_mode_Off;
+  debug_mode = debug_mode_On;
+//  debug_mode = debug_mode_Off;
 
   Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
@@ -742,7 +742,9 @@ for(int i=0; i< 2; i++){
 	  W25qxx_Init();
   }
 
-
+//  W25qxx_EraseSector(0);
+//  while(1);
+  Write_CCU_Infomation_Data_Flash();
   //Write_W25Q_Device_Info();
  // Read_W25Q_Device_Info();
   /*
@@ -2978,6 +2980,76 @@ void Analog_test_read(void){
 
 }
 
+void Write_CCU_Infomation_Data_Flash(void){
+
+	int Change_Data = 0;
+	uint8_t W25Q_Page_Read_t[256];
+
+	if(Change_Data == 0){
+		W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
+		for(int i =0 ; i< 256; i++){
+			if(W25Q_Page_Read_t[i] == CCU_Infomation_Data[i]){}
+			else{Change_Data = 1;}
+		}
+	}
+
+	if(Change_Data == 1){
+
+		Flash_ID= W25qxx_ReadID();
+		if(_MANUFACTURER_ID == ((Flash_ID >> 16) & 0xff)){
+			Flash_Status = 1;
+		}
+		else{
+			Flash_Status = 0;
+		}
+
+		if(Flash_Status == 1){
+
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
+
+			W25qxx_EraseSector(0);
+			W25qxx_WritePage(CCU_Infomation_Data,CCU_Infomation_Data_Add ,0,256);
+			W25qxx_WritePage(REPEATER_Regster,REPEATER_Regster_Data_Add ,0,Repeater_Number);
+			W25qxx_WritePage(REPEATER_Acc_Set_Data,REPEATER_Acc_Set_Data_Add ,0,Repeater_Number);
+
+			W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
+		}
+	}
+}
+
+void Write_REPEATER_Data_Flash(void){
+
+	int Change_Data = 0;
+	uint8_t W25Q_Page_Read_t[256];
+
+	//////REPEATER_Regster
+	if(Change_Data == 0){
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
+		for(int i =0 ; i< Repeater_Number; i++){
+			if(W25Q_Page_Read_t[i] == REPEATER_Regster[i]){}
+			else{Change_Data = 1;}
+		}
+	}
+
+	if(Change_Data == 1){
+		W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
+
+		W25qxx_EraseSector(0);
+		W25qxx_WritePage(CCU_Infomation_Data,CCU_Infomation_Data_Add ,0,256);
+		W25qxx_WritePage(REPEATER_Regster,REPEATER_Regster_Data_Add ,0,Repeater_Number);
+		W25qxx_WritePage(REPEATER_Acc_Set_Data,REPEATER_Acc_Set_Data_Add ,0,Repeater_Number);
+
+		W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
+	}
+
+}
+
 void Write_W25_Flash(void){
 
 	int Change_Data = 0;
@@ -2994,7 +3066,7 @@ void Write_W25_Flash(void){
 
 	//////REPEATER_Regster
 	if(Change_Data == 0){
-		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, 256);
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
 		for(int i =0 ; i< Repeater_Number; i++){
 			if(W25Q_Page_Read_t[i] == REPEATER_Regster[i]){}
 			else{Change_Data = 1;}
@@ -3003,7 +3075,7 @@ void Write_W25_Flash(void){
 
 	//////REPEATER_Regster
 	if(Change_Data == 0){
-		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, 256);
+		W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
 		for(int i =0 ; i< Repeater_Number; i++){
 			if(W25Q_Page_Read_t[i] == REPEATER_Acc_Set_Data[i]){}
 			else{Change_Data = 1;}
@@ -3026,6 +3098,10 @@ void Write_W25_Flash(void){
 			W25qxx_WritePage(CCU_Infomation_Data,CCU_Infomation_Data_Add ,0,256);
 			W25qxx_WritePage(REPEATER_Regster,REPEATER_Regster_Data_Add ,0,Repeater_Number);
 			W25qxx_WritePage(REPEATER_Acc_Set_Data,REPEATER_Acc_Set_Data_Add ,0,Repeater_Number);
+
+			W25qxx_ReadPage(W25Q_Page_Read_t, CCU_Infomation_Data_Add,0, 256);
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Regster_Data_Add,0, Repeater_Number);
+			W25qxx_ReadPage(W25Q_Page_Read_t, REPEATER_Acc_Set_Data_Add,0, Repeater_Number);
 		}
 	}
 }

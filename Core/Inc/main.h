@@ -92,10 +92,15 @@ void Analog_test_read(void);
 void Write_W25_Flash(void);
 void Read_W25_Flash(void);
 
+void Write_CCU_Infomation_Data_Flash(void);
+void Write_REPEATER_Data_Flash(void);
+
 uint8_t Read_Repeater_Version(int num, uint8_t Com_Status);
 
 uint8_t Check_Line_Status(int num, uint8_t Com_Status);
 uint8_t Check_Line_Data(int check_val);
+
+
 
 extern uint8_t Rep_ISO_In_Open;
 extern uint8_t Rep_ISO_In_Short;
