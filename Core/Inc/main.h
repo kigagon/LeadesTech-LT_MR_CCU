@@ -237,7 +237,7 @@ extern uint8_t CCU_Address ;
 
 #define Max_Wate_udelay	500
 //#define Max_Wate_Recever	35*(1000 / Max_Wate_udelay) // under 100, Set to multiples of 8
-#define Max_Wate_Recever	35*(1000 / Max_Wate_udelay) // under 100, Set to multiples of 8
+#define Max_Wate_Recever	40*(1000 / Max_Wate_udelay) // under 100, Set to multiples of 8
 #define Pow_Bod_Max_Number 8
 
 #define Pow_Bod_Header_Number  6

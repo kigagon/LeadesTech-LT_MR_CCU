@@ -503,8 +503,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-  debug_mode = debug_mode_On;
-//  debug_mode = debug_mode_Off;
+//  debug_mode = debug_mode_On;
+  debug_mode = debug_mode_Off;
 
   Analog_Test_Mode = Def_Out_Mode;
 //  Analog_Test_Mode = Analog_optic_Test_Mode;
