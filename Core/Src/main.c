@@ -511,8 +511,8 @@ int main(void)
 //  Analog_Test_Mode = Analog_temp_Test_Mode;
 
 
-// Read_Info_Mode = Read_Info_Test_Mode; //형식승인용 모드
- Read_Info_Mode = Read_Info_Def_Mode;
+ Read_Info_Mode = Read_Info_Test_Mode; //형식승인용 모드
+// Read_Info_Mode = Read_Info_Def_Mode;
 //  Read_Info_Mode = Read_Info_Production_Mode;  // 검정용 모드
 
 
@@ -929,7 +929,9 @@ for(int i=0; i< 2; i++){
   //Test_Init();
 
 
-
+  for(int i=0; i<220; i++){
+  			  REPEATER_Regster[i] = 1;
+  		  }
 /*
   uint8_t W25Q_Page_Read_t[512];
   uint8_t W25Q_Page_Write_t[512];
