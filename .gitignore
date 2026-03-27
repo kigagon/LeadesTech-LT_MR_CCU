@@ -14,13 +14,13 @@
 *.suo
 *.user
 *.settings/
-.settings/
 
 # Eclipse specific files
 .project
 .cproject
 .metadata/
 .settings/
+.settings/language.settings
 
 # Other temporary or generated files
 *.bak
